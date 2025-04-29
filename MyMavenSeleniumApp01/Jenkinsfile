@@ -1,43 +1,47 @@
 pipeline {
-    agent any
+    agent any  // Use any available agent
 
     tools {
-        maven 'Maven'  // Replace with actual tool names from Jenkins configuration
-        jdk 'JDK'
+        maven 'Maven'  // Ensure this matches the name configured in Jenkins
     }
-
     stages {
         stage('Checkout') {
             steps {
-                checkout scm
+                git branch: 'master', url: 'https://github.com/sharan9418/MyMavenSelenium.git'
             }
         }
 
         stage('Build') {
             steps {
-                sh 'mvn clean package'
+                sh 'mvn clean package'  // Run Maven build
             }
         }
 
         stage('Test') {
             steps {
-                sh 'mvn test'
+                sh 'mvn test'  // Run unit tests
             }
         }
 
-        stage('Archive Artifacts') {
+        
+        
+       
+        stage('Run Application') {
             steps {
-                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+                // Start the JAR application
+                sh 'java -jar target/MyMavenJenkinsPipeline-1.0-SNAPSHOT.jar'
             }
         }
+
+        
     }
 
     post {
         success {
-            echo 'Pipeline completed successfully!'
+            echo 'Build and deployment successful!'
         }
         failure {
-            echo 'Pipeline failed!'
+            echo 'Build failed!'
         }
     }
 }
